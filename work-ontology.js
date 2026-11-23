@@ -28,7 +28,19 @@
 //     { id: 'REFERS_TO',  label: 'refers to',  from: ['*'],     to: ['*'],    made: 'explicit', desc: 'Manual reference between two work items' },
 //   ],
 
+// 온톨로지 도우미: 사람이 인터뷰로 만드는 온톨로지 자체가 업무 항목이다(OWL 클래스·객체 속성·데이터 속성) + .ttl 설명.
+const nameOf = (x) => x.label ? `${x.label} (${x.name || ''})` : (x.name || '');
 module.exports = {
-  classes: [],
-  relations: [],
+  classes: [
+    { id: 'OntoClass',     label: 'Class',       list: 'classes',      title: nameOf, desc: 'A concept in the ontology being built (owl:Class) — name, label, comment, parent' },
+    { id: 'OntoRelation',  label: 'Relation',    list: 'relations',    title: nameOf, desc: 'A link between two classes (owl:ObjectProperty) — name, label, comment, domain, range, functional' },
+    { id: 'OntoAttribute', label: 'Attribute',   list: 'attributes',   title: nameOf, desc: 'A value a class carries (owl:DatatypeProperty) — name, label, comment, domain, datatype, functional' },
+    { id: 'Explanation',   label: 'Explanation', list: 'explanations', title: (x) => x.title || x.file || 'Explanation', desc: 'A plain-language explanation of an uploaded .ttl file' },
+  ],
+  relations: [
+    { id: 'SUBCLASS_OF', label: 'subclass of', from: ['OntoClass'],     to: ['OntoClass'], made: 'derived', field: 'OntoClass.parent',     desc: 'rdfs:subClassOf' },
+    { id: 'DOMAIN',      label: 'domain',      from: ['OntoRelation'],  to: ['OntoClass'], made: 'derived', field: 'OntoRelation.domain',  desc: 'The class the relation starts from' },
+    { id: 'RANGE',       label: 'range',       from: ['OntoRelation'],  to: ['OntoClass'], made: 'derived', field: 'OntoRelation.range',   desc: 'The class the relation points to' },
+    { id: 'ATTRIBUTE_OF', label: 'attribute of', from: ['OntoAttribute'], to: ['OntoClass'], made: 'derived', field: 'OntoAttribute.domain', desc: 'The class that carries this attribute' },
+  ],
 };
