@@ -632,7 +632,13 @@ function createDashboardApi(core, opts) {
           ...(url.searchParams.get('download') === '1' ? { 'content-disposition': attachment('ontology.ttl') } : {}) });
         return res.end(ttl), true;
       }
-      return sendJson(res, 200, { version: s.version, iri: ontoTools.BASE_IRI, ttl, checks: ontoTools.check(s), summary: ontoTools.sentences(s) }), true;
+      return sendJson(res, 200, { version: s.version, iri: ontoTools.BASE_IRI, ttl, checks: ontoTools.check(s), summary: ontoTools.sentences(s), units: ontoTools.UNITS }), true;
+    }
+    // 표준 온톨로지에서 고른 후보(standards/*.json) — 인터뷰가 '이 중 쓰는 것 고르기'에 쓴다
+    if (p === '/api/onto/standards' && req.method === 'GET') {
+      const dir = path.join(ROOT, 'standards'); let list = [];
+      try { list = (await fsp.readdir(dir)).filter((f) => f.endsWith('.json')).map((f) => ({ file: f, ...JSON.parse(require('node:fs').readFileSync(path.join(dir, f), 'utf8')) })); } catch {}
+      return sendJson(res, 200, { standards: list }), true;
     }
 
     // ---- 그래프(NodeRel) ----
