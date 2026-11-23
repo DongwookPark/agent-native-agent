@@ -120,7 +120,10 @@ test('Knowledge starts empty; the agent adds kinds, relations, things and facts;
 });
 
 test('A new ANA starts with no PRD, no work and no knowledge — the first conversation writes them', async (t) => {
-  const { api, stop } = await startServer({ ANA_SEED: '1' });   // 예전 판의 견본 스위치가 켜져 있어도 비어 있다
+  // 이 ANA는 업무 종류(온톨로지 도우미)를 선언했다 — 새 ANA의 모습은 빈 선언으로 본다
+  const empty = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'ana-onto-')), 'work-ontology.js');
+  fs.writeFileSync(empty, 'module.exports = { classes: [], relations: [] };');
+  const { api, stop } = await startServer({ ANA_SEED: '1', ANA_WORK_ONTOLOGY: empty });   // 예전 판의 견본 스위치가 켜져 있어도 비어 있다
   t.after(stop);
   assert.equal((await (await fetch(api + '/api/prd')).json()).current, null, 'no PRD');
   const st = await (await fetch(api + '/api/state')).json();

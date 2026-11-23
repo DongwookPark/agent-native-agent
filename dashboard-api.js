@@ -16,7 +16,8 @@ const crypto = require('node:crypto');
 const os = require('node:os');
 const fsp = require('node:fs/promises');
 const { execFile } = require('node:child_process');
-const relgraph = require('./graph-index.js');   // 업무 항목·지식·문서를 한 그래프로 — NodeRel 색인(graph-index.sqlite)
+const relgraph = require('./graph-index.js');
+const ontoTools = require('./ontology-tools.js');   // 인터뷰로 만든 온톨로지 → Turtle·검사·요약(Work › 만들기)   // 업무 항목·지식·문서를 한 그래프로 — NodeRel 색인(graph-index.sqlite)
 const codexSettings = require('./codex-settings.js');
 const permissionMode = require('./permission-mode.js');
 const { createAgentLog } = require('./agent-log.js');
@@ -620,6 +621,18 @@ function createDashboardApi(core, opts) {
       let g; try { g = graph.view(ws, s); } catch (e) { g = { links: [], error: e.message }; }
       return sendJson(res, 200, { ...s, workspace: ws, graph: g,
         proposals: ps.proposals.filter((x) => x.status === 'pending' && (x.ws || DEFAULT_WS) === ws).slice(-50) }), true;
+    }
+
+    // ---- 온톨로지 도우미: 만든 온톨로지의 Turtle·규칙 검사·쉬운 말 요약 ----
+    if ((p === '/api/onto' || p === '/api/onto.ttl') && req.method === 'GET') {
+      let s; try { s = loadData(); } catch (e) { return sendJson(res, 500, { error: 'state file corrupt', detail: e.message }), true; }
+      const ttl = ontoTools.toTurtle(s);
+      if (p === '/api/onto.ttl') {
+        res.writeHead(200, { 'content-type': 'text/turtle; charset=utf-8', 'x-content-type-options': 'nosniff',
+          ...(url.searchParams.get('download') === '1' ? { 'content-disposition': attachment('ontology.ttl') } : {}) });
+        return res.end(ttl), true;
+      }
+      return sendJson(res, 200, { version: s.version, iri: ontoTools.BASE_IRI, ttl, checks: ontoTools.check(s), summary: ontoTools.sentences(s) }), true;
     }
 
     // ---- 그래프(NodeRel) ----

@@ -23,6 +23,7 @@
   --danger: #E0342B; --danger-bg: #FDECEC; --success: #0F9D58; --success-bg: #E7F8EF;
   --warm-bg: #FFF2E5; --warm-fg: #E8731C;
   --c-1: #FF5A8A;
+  --onto: #C8702F; --onto-line: #EBD3C1;
   --r-xl: 24px; --r-lg: 20px; --r: 16px; --r-sm: 12px; --r-xs: 10px;
   --sh-card: 0 1px 3px rgba(0,0,0,.06), 0 4px 14px rgba(0,0,0,.04);
   --sh-fab: 0 8px 20px color-mix(in srgb, var(--acc) 40%, transparent);
@@ -41,7 +42,7 @@
     --text: #F2F4F6; --text-sub: #C2C7CE; --text-weak: #97A1AD;
     --line: #2E3138; --line-2: #292C32; --acc-weak: #16335C;
     --danger-bg: #4A1A18; --danger: #FF9B93; --success-bg: #143D2A; --success: #5BE2A0;
-    --warm-bg: #4A3115; --warm-fg: #FFC489;
+    --warm-bg: #4A3115; --warm-fg: #FFC489; --onto: #E89A5E; --onto-line: #4A3526;
     --acc-strong: #9CC2FF; --sh-card: 0 1px 3px rgba(0,0,0,.4);
   }
 }
@@ -569,6 +570,30 @@ body.sketching { overflow: hidden; }
 .work-empty h2 { font-size: 19px; font-weight: 800; margin: 0 0 8px; } .work-empty p { color: var(--text-sub); max-width: 520px; margin: 0 auto 18px; line-height: 1.6; }
 .work-acts { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
 .work-acts .ok { height: 36px; padding: 0 16px; border-radius: 999px; font-weight: 700; background: var(--acc, var(--blue)); color: #fff; }
+/* Work: 온톨로지 도우미 */
+.onto-go, .onto-pick { height: 34px; padding: 0 16px; border-radius: 999px; font-weight: 700; background: var(--acc, var(--blue)); color: #fff; display: inline-flex; align-items: center; cursor: pointer; }
+.onto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; } .onto-wide { grid-column: 1 / -1; }
+@media (max-width: 768px) { .onto-grid { grid-template-columns: 1fr; } }
+.onto-panel { padding: 14px 16px; min-width: 0; } .onto-panel h3 { font-size: 14px; font-weight: 800; margin: 0 0 10px; display: flex; align-items: center; gap: 8px; }
+.onto-empty { color: var(--text-weak); font-size: 13px; }
+.onto-cls { padding: 8px 0; border-top: 1px solid var(--line-2); } .onto-cls:first-child { border-top: none; padding-top: 0; }
+.onto-cls b { font-size: 14px; } .onto-cls code { font-size: 11.5px; color: var(--text-weak); margin-left: 6px; }
+.onto-cls .c { font-size: 12.5px; color: var(--text-sub); } .onto-cls ul { margin: 4px 0 0; padding-left: 18px; font-size: 13.5px; }
+.onto-chk { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; padding: 5px 0; }
+.onto-chk i { flex: 0 0 auto; font-style: normal; font-size: 10.5px; font-weight: 800; padding: 1px 7px; border-radius: 999px; margin-top: 2px; }
+.onto-chk.error i { background: var(--danger-bg); color: var(--danger); } .onto-chk.warn i { background: var(--warm-bg); color: var(--warm-fg); } .onto-chk.info i { background: var(--surface-2); color: var(--text-weak); }
+.onto-badge { font-size: 11px; font-weight: 800; padding: 1px 8px; border-radius: 999px; background: var(--surface-2); color: var(--text-weak); } .onto-badge.bad { background: var(--danger-bg); color: var(--danger); } .onto-badge.good { background: var(--success-bg); color: var(--success); }
+.onto-dl { margin-left: auto; font-size: 12.5px; font-weight: 700; color: var(--acc, var(--blue)); text-decoration: none; }
+.onto-ttl { margin: 0; max-height: 70vh; overflow: auto; font-size: 12px; line-height: 1.55; background: var(--surface-2); border-radius: var(--r-xs); padding: 12px; white-space: pre; }
+.onto-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12.5px; color: var(--text-sub); margin-bottom: 8px; } .onto-legend b { color: var(--onto); font-weight: 700; }
+.onto-graph-card { padding: 16px 18px; } #ontoGraph { overflow-x: auto; } .onto-svg { display: block; width: 100%; height: auto; }
+.onto-svg .n rect { fill: var(--surface); stroke: var(--onto); stroke-width: 1.6; } .onto-svg .n line { stroke: var(--onto-line); stroke-width: 1; }
+.onto-svg .n .hd { font-size: 14px; font-weight: 800; fill: var(--text); text-anchor: middle; } .onto-svg .n .at { font-size: 12px; fill: var(--text-sub); }
+.onto-svg .e { stroke: var(--onto); stroke-width: 1.6; fill: none; opacity: .85; } .onto-svg .e.sub { stroke: var(--text-weak); stroke-width: 1.2; stroke-dasharray: 5 4; opacity: .7; }
+.onto-svg .ah { fill: var(--onto); } .onto-svg .tri { fill: var(--surface); stroke: var(--text-weak); stroke-width: 1.2; }
+.onto-svg .el { font-size: 11.5px; font-weight: 700; fill: var(--onto); text-anchor: middle; paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+.onto-ex { padding: 14px 16px; margin-bottom: 10px; } .onto-ex h3 { font-size: 15px; font-weight: 800; margin: 0 0 2px; } .onto-ex .m { font-size: 12px; color: var(--text-weak); margin-bottom: 8px; }
+.onto-ex .t { white-space: pre-wrap; font-size: 14px; line-height: 1.65; }
 /* Knowledge: 온톨로지 목록 · 그래프 */
 .k-list { padding: 4px 0; margin-bottom: 16px; }
 .k-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border-top: 1px solid var(--line-2); } .k-row:first-child { border-top: none; }
@@ -849,7 +874,7 @@ body.drawing .fab { display: none !important; }   /* 그리는 동안은 툴바�
   --text: #F2F4F6; --text-sub: #C2C7CE; --text-weak: #97A1AD;
   --line: #2E3138; --line-2: #292C32;
   --danger-bg: #4A1A18; --danger: #FF9B93; --success-bg: #143D2A; --success: #5BE2A0;
-  --warm-bg: #4A3115; --warm-fg: #FFC489;
+  --warm-bg: #4A3115; --warm-fg: #FFC489; --onto: #E89A5E; --onto-line: #4A3526;
   --sh-card: 0 1px 3px rgba(0,0,0,.4);
 }
 
@@ -1238,7 +1263,32 @@ html.kb-open .chat-dock .composer { margin-bottom: 2px; }
 
   <!-- Work: 이 ANA가 하는 일의 화면. 처음엔 비어 있다 — PRD에 적은 대로 에이전트가 만든다(도메인 ANA는 여기에 자기 화면을 둔다) -->
   <section class="view" id="workView" role="tabpanel"><div class="wrap">
-    <div id="workArea"></div>
+    <div id="workArea">
+      <!-- 온톨로지 도우미: 만들기(인터뷰 → 온톨로지) · 설명(.ttl → 쉬운 말) -->
+      <nav class="subtabs" data-sub="work" role="tablist" aria-label="Work"></nav>
+      <div class="toolbar" data-subsec="interview graph turtle"><span class="cnt" id="ontoSum"></span><span class="sp"></span><button class="ok onto-go" id="ontoInterview">인터뷰 시작하기</button></div>
+      <div data-subsec="interview">
+        <div class="onto-grid">
+          <section class="card onto-panel"><h3>쉬운 말 요약</h3><div id="ontoSummary"></div></section>
+          <section class="card onto-panel"><h3>검사 결과 <span class="onto-badge" id="ontoCheckN"></span></h3><div id="ontoChecks"></div></section>
+        </div>
+      </div>
+      <div data-subsec="graph" hidden>
+        <section class="card onto-graph-card">
+          <div class="onto-legend"><span><b>→</b> 관계 (domain → range)</span><span><b style="color:var(--text-weak)">- - ▷</b> 상위 개념</span><span>상자 안: 속성</span></div>
+          <div id="ontoGraph"></div>
+        </section>
+      </div>
+      <div data-subsec="turtle" hidden>
+        <section class="card onto-panel"><h3>Turtle 원문 <a class="onto-dl" href="/api/onto.ttl?download=1">.ttl 내려받기</a></h3><pre class="onto-ttl" id="ontoTtl"></pre></section>
+      </div>
+      <div data-subsec="explain" hidden>
+        <div class="toolbar"><span class="cnt">지금 만든 온톨로지를 쉬운 말로 다시 풀어 받거나, 다른 파일을 올려 보세요.</span><span class="sp"></span><button class="ok onto-go" id="ontoExplainMine">지금 만든 온톨로지 설명하기</button></div>
+        <label class="doc-drop" id="ontoDrop"><span>온톨로지 파일(<b>.ttl</b>, .owl, .rdf)을 올리면 무엇을 담고 있는지 쉬운 말로 풀어 드려요.</span>
+          <input type="file" id="ontoFile" accept=".ttl,.owl,.rdf,.n3,.nt,.jsonld,text/turtle" hidden><span class="ok onto-pick" role="button" tabindex="0">파일 고르기</span><span class="doc-status" id="ontoUpSt"></span></label>
+        <div id="ontoExplains"></div>
+      </div>
+    </div>
     <div class="card work-empty" id="workEmpty">
       <!-- PRD가 없을 때: Work는 PRD에서 나오므로 PRD로 보낸다(같은 시작 버튼을 두 곳에 두지 않는다) -->
       <div data-wstate="noprd">
@@ -1542,6 +1592,7 @@ async function refreshData() {
   for (const [list, arr] of Object.entries(s)) if (Array.isArray(arr) && !['links', 'proposals'].includes(list)) for (const x of arr) if (x && x.id != null) workItems.set(String(x.id), { list, x });
   (s.proposals || []).forEach((p) => proposals.set(p.id, p)); renderApprovals();
   refreshPropCards();
+  renderOnto(s);
 }
 const noteTitle = (n) => (n.title || n.name || '').trim() || String(n.text || '').trim().split('\n')[0].slice(0, 40) || 'Untitled';
 function nodeOf(id) {
@@ -1568,6 +1619,163 @@ Build it into #workArea in dashboard.html (sub-tabs with <nav class="subtabs" da
 Verify with the tests and a look at the page. Then update the PRD so it says what Work now has (POST ${api('/api/prd')} {"md":"…","note":"Built Work","source":"agent"}) and tell me what you built.`;
   sendInstruction(prompt, { err: 'Request failed' })
     .catch(() => showErr('Request failed')).finally(() => { b.disabled = false; b.textContent = orig; });
+};
+
+/* ---- Work: 온톨로지 도우미 ----
+   만들기: 인터뷰 답이 바로 work-graph.json의 classes·relations·attributes에 들어가고, 여기서 요약·그림·Turtle·검사를 본다(GET /api/onto).
+   설명: .ttl을 올리면 에이전트가 읽고 쉬운 말 설명을 explanations에 남긴다. */
+let ontoSeq = 0;
+async function renderOnto(s) {
+  if (!$('ontoSummary')) return;
+  const my = ++ontoSeq;
+  const L = (k) => (s && Array.isArray(s[k]) ? s[k] : []);
+  const cls = L('classes'), rel = L('relations'), att = L('attributes');
+  $('ontoSum').textContent = `개념 ${cls.length} · 관계 ${rel.length} · 속성 ${att.length}`;
+  $('ontoGraph').innerHTML = cls.length ? ontoGraphSvg(cls, rel, att) : '<div class="onto-empty">아직 개념이 없어요. 인터뷰를 시작하면 여기에 그림이 그려져요.</div>';
+  renderOntoExplains(L('explanations'));
+  let o; try { o = await getJSON('/api/onto'); } catch { return; }
+  if (my !== ontoSeq) return;
+  $('ontoTtl').textContent = o.ttl;
+  $('ontoSummary').innerHTML = o.summary.length ? o.summary.map((c) => `<div class="onto-cls"><b>${escapeHtml(c.head)}</b>${c.comment ? `<div class="c">${escapeHtml(c.comment)}</div>` : ''}${c.lines.length ? `<ul>${c.lines.map((l) => `<li>${escapeHtml(l)}</li>`).join('')}</ul>` : ''}</div>`).join('')
+    : '<div class="onto-empty">인터뷰에 답하면 "고객은 주문을 할 수 있다" 같은 문장이 여기에 쌓여요.</div>';
+  const bad = o.checks.filter((c) => c.level === 'error').length, warn = o.checks.filter((c) => c.level === 'warn').length;
+  const LV = { error: '오류', warn: '주의', info: '참고' };
+  $('ontoCheckN').textContent = !cls.length ? '' : bad ? `오류 ${bad}` : warn ? `주의 ${warn}` : '통과';
+  $('ontoCheckN').className = 'onto-badge' + (!cls.length ? '' : bad ? ' bad' : warn ? '' : ' good');
+  $('ontoChecks').innerHTML = o.checks.length ? o.checks.map((c) => `<div class="onto-chk ${c.level}"><i>${LV[c.level]}</i><span>${escapeHtml(c.msg)}</span></div>`).join('')
+    : `<div class="onto-empty">${cls.length ? '규칙에 어긋난 곳이 없어요.' : '만든 온톨로지를 규칙에 맞는지 여기서 검사해요.'}</div>`;
+}
+// 개념은 상자(위: 이름, 아래: 속성 '이름 : 값 종류'), 관계는 화살표(이름), 상위 개념은 점선 + 빈 삼각형.
+// 상위 개념의 깊이로 줄을 나누고(맨 위 = 상위 개념이 없는 것), 한 줄이 넘치면 다음 줄로 넘긴다. 하위 개념은 상위 개념 순서를 따른다.
+function ontoGraphSvg(cls, rel, att) {
+  const W = 1100, PADX = 24, GAPX = 34, GAPY = 96, HEAD = 30, LINE = 17, MAXA = 6;
+  const nm = (x) => String(x.label || x.name || '?');
+  const tw = (s, px) => [...String(s)].reduce((n, ch) => n + (ch.charCodeAt(0) > 0x2e80 ? px : px * 0.58), 0);
+  const byId = new Map(cls.map((c) => [String(c.id), c]));
+  const depth = (c) => { let d = 0, p = c.parent, seen = new Set(); while (p != null && p !== '' && byId.has(String(p)) && !seen.has(String(p)) && d < 8) { seen.add(String(p)); d++; p = byId.get(String(p)).parent; } return d; };
+  const box = new Map(cls.map((c) => {
+    const at = att.filter((a) => String(a.domain) === String(c.id)).map((a) => `${nm(a)} : ${a.datatype || 'string'}`);
+    const lines = at.length > MAXA ? [...at.slice(0, MAXA - 1), `… 외 ${at.length - MAXA + 1}개`] : at;
+    const w = Math.max(96, tw(nm(c), 14) + 36, ...lines.map((l) => tw(l, 12) + 28));
+    return [String(c.id), { c, lines, w: Math.ceil(w), h: HEAD + (lines.length ? lines.length * LINE + 12 : 6) }];
+  }));
+  // 줄 나누기: 깊이별, 하위 개념은 상위 개념의 순서대로
+  const levels = [];
+  cls.forEach((c) => { (levels[depth(c)] ||= []).push(String(c.id)); });
+  const order = new Map();
+  const rows = [];
+  levels.forEach((ids, d) => {
+    if (d > 0) ids.sort((a, b) => (order.get(String(byId.get(a).parent)) ?? 0) - (order.get(String(byId.get(b).parent)) ?? 0));
+    // 같은 상위 개념의 하위 개념은 한 묶음 — 남은 자리에 묶음이 다 안 들어가면 새 줄에서 시작한다
+    const groups = []; ids.forEach((id) => { const p = d ? String(byId.get(id).parent) : ''; if (!groups.length || groups[groups.length - 1].p !== p || !d) groups.push({ p, ids: [] }); groups[groups.length - 1].ids.push(id); });
+    let row = [], x = PADX;
+    for (const g of groups) {
+      const gw = g.ids.reduce((n, id) => n + box.get(id).w + GAPX, 0);
+      if (row.length && x + gw > W - PADX + GAPX) { rows.push(row); row = []; x = PADX; }
+      for (const id of g.ids) { const b = box.get(id); if (row.length && x + b.w > W - PADX) { rows.push(row); row = []; x = PADX; } row.push(id); x += b.w + GAPX; }
+    }
+    if (row.length) rows.push(row);
+  });
+  let y = 0, k = 0;
+  for (const row of rows) {
+    const total = row.reduce((n, id) => n + box.get(id).w, 0) + GAPX * (row.length - 1);
+    let x = Math.max(PADX, (W - total) / 2);
+    const rh = Math.max(...row.map((id) => box.get(id).h));
+    for (const id of row) { const b = box.get(id); b.x = x; b.y = y; x += b.w + GAPX; order.set(id, k++); }
+    y += rh + GAPY;
+  }
+  // 같은 줄 안의 관계(자기 자신 포함)는 상자 위로 둥글게 넘긴다 — 가운데 상자에 가리지 않게. 겹치는 구간은 한 층씩 위로
+  const ARC0 = 26, ARCS = 22, arcs = [], used = [];
+  const rowOf = (id) => box.get(id).y;
+  const edgeList = [];
+  for (const c of cls) if (c.parent != null && byId.has(String(c.parent))) edgeList.push({ a: String(c.id), b: String(c.parent), t: '', sub: true });
+  const idl = (v) => (Array.isArray(v) ? v : [v]).map((x) => String(x == null ? '' : x)).filter((x) => byId.has(x));   // 하나 또는 여러 개(그중 하나)
+  for (const r of rel) for (const d of idl(r.domain)) for (const g of idl(r.range)) edgeList.push({ a: d, b: g, t: nm(r) });
+  edgeList.filter((e) => !e.sub && rowOf(e.a) === rowOf(e.b)).map((e) => {
+    const A = box.get(e.a), B = box.get(e.b), ax = A.x + A.w / 2, bx = B.x + B.w / 2;
+    const lo = Math.min(ax, bx) - (e.a === e.b ? 34 : 0), hi = Math.max(ax, bx) + (e.a === e.b ? 34 : 0);
+    return { e, lo, hi, row: A.y };
+  }).sort((p, q) => (p.hi - p.lo) - (q.hi - q.lo)).forEach((a) => {
+    let L = 0; while ((used[L] ||= []).some((u) => u.row === a.row && u.lo < a.hi + 40 && a.lo < u.hi + 40)) L++;
+    used[L].push(a); a.e.arc = ARC0 + L * ARCS; arcs.push(a);
+  });
+  const lift = Math.max(0, ...arcs.filter((a) => a.row === 0).map((a) => a.e.arc));
+  const top = 30 + lift;
+  for (const b of box.values()) b.y += top;
+  const H = y - GAPY + top + 30;
+  // 상자 가장자리에서 시작·끝나도록
+  const edgePt = (b, tx, ty, pad) => {
+    const cx = b.x + b.w / 2, cy = b.y + b.h / 2, dx = tx - cx, dy = ty - cy;
+    const t = Math.min(dx ? (b.w / 2 + pad) / Math.abs(dx) : Infinity, dy ? (b.h / 2 + pad) / Math.abs(dy) : Infinity);
+    return [cx + dx * t, cy + dy * t];
+  };
+  const edges = edgeList;
+  const key = (e) => [e.a, e.b].sort().join('|'), pairN = new Map(), pairI = new Map();
+  edges.forEach((e) => pairN.set(key(e), (pairN.get(key(e)) || 0) + 1));
+  const paths = [], labels = [];
+  for (const e of edges) {
+    const k2 = key(e), i = pairI.get(k2) || 0; pairI.set(k2, i + 1);
+    const A = box.get(e.a), B = box.get(e.b);
+    if (e.arc) {   // 같은 줄(또는 자기 자신): 위로 넘어가는 호. 꼭대기에 이름
+      const y0 = A.y, up = e.arc, self = e.a === e.b;
+      const sx = A.x + A.w / 2 + (self ? -16 : B.x > A.x ? 10 : -10), tx = B.x + B.w / 2 + (self ? 16 : B.x > A.x ? -10 : 10);
+      const mx = (sx + tx) / 2, k = self ? 1.35 : 1;
+      paths.push(self
+        ? `<path class="e" d="M${sx} ${y0} C ${sx - 18} ${y0 - up * k}, ${tx + 18} ${y0 - up * k}, ${tx} ${y0 - 3}" marker-end="url(#ontoArr)"/>`
+        : `<path class="e" d="M${sx} ${y0} C ${sx} ${y0 - up * 1.33}, ${tx} ${y0 - up * 1.33}, ${tx} ${y0 - 3}" marker-end="url(#ontoArr)"/>`);
+      labels.push(`<text class="el" x="${mx}" y="${y0 - up + 4}">${escapeHtml(e.t)}</text>`);
+      continue;
+    }
+    const bc = [B.x + B.w / 2, B.y + B.h / 2], ac = [A.x + A.w / 2, A.y + A.h / 2];
+    const [sx, sy] = edgePt(A, bc[0], bc[1], 0), [tx, ty] = edgePt(B, ac[0], ac[1], 3);
+    const dx = tx - sx, dy = ty - sy, d = Math.hypot(dx, dy) || 1;
+    const sign = e.a < e.b ? 1 : -1, bend = (i - (pairN.get(k2) - 1) / 2) * 30 * sign;
+    const mx = (sx + tx) / 2 - (dy / d) * bend, my = (sy + ty) / 2 + (dx / d) * bend;
+    paths.push(`<path class="e${e.sub ? ' sub' : ''}" d="M${sx.toFixed(1)} ${sy.toFixed(1)} Q ${mx.toFixed(1)} ${my.toFixed(1)} ${tx.toFixed(1)} ${ty.toFixed(1)}" marker-end="url(#${e.sub ? 'ontoTri' : 'ontoArr'})"/>`);
+    if (e.t) labels.push(`<text class="el" x="${((sx + tx) / 4 + mx / 2).toFixed(1)}" y="${((sy + ty) / 4 + my / 2 + 4).toFixed(1)}">${escapeHtml(e.t)}</text>`);
+  }
+  const nodes = cls.map((c) => {
+    const b = box.get(String(c.id)), cx = b.x + b.w / 2;
+    const at = b.lines.map((l, j) => `<text class="at" x="${b.x + 14}" y="${b.y + HEAD + 14 + j * LINE}">${escapeHtml(l)}</text>`).join('');
+    return `<g class="n"><title>${escapeHtml(`${nm(c)} (${c.name || ''})${c.comment ? '\n' + c.comment : ''}`)}</title><rect x="${b.x}" y="${b.y}" width="${b.w}" height="${b.h}" rx="10"/><text class="hd" x="${cx}" y="${b.y + 20}">${escapeHtml(nm(c))}</text>${b.lines.length ? `<line x1="${b.x + 10}" x2="${b.x + b.w - 10}" y1="${b.y + HEAD}" y2="${b.y + HEAD}"/>` : ''}${at}</g>`;
+  }).join('');
+  return `<svg class="onto-svg" viewBox="0 0 ${W} ${H}" style="min-width:${Math.min(W, 860)}px" role="img" aria-label="온톨로지 그림"><defs>
+<marker id="ontoArr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ah"/></marker>
+<marker id="ontoTri" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M1 1L11 6L1 11z" class="tri"/></marker></defs>${paths.join('')}${nodes}${labels.join('')}</svg>`;
+}
+function renderOntoExplains(list) {
+  const el = $('ontoExplains'); if (!el) return;
+  el.innerHTML = list.length ? list.slice().reverse().map((x) => `<article class="card onto-ex"><h3>${escapeHtml(x.title || x.file || '설명')}</h3><div class="m">${escapeHtml([x.file, String(x.at || '').slice(0, 10)].filter(Boolean).join(' · '))}</div><div class="t">${escapeHtml(x.text || '')}</div></article>`).join('')
+    : '<div class="onto-empty">아직 설명한 파일이 없어요.</div>';
+}
+$('ontoInterview').onclick = () => {
+  const api = (path) => `http://${agentHost}${path}`;
+  sendInstruction(`[Interview] 온톨로지 인터뷰를 시작(또는 이어서) 해 주세요.
+나는 온톨로지를 처음 접하는 현업 담당자예요. 한국어로, 쉬운 말로, 한 번에 짧은 질문 하나씩 물어봐 주세요(다루는 대상 → 그 대상의 종류 → 서로 어떻게 이어지는지 → 각 대상에 적어 두는 정보 순서). 지금까지 만든 것은 GET ${api('/api/onto')}와 GET ${api('/api/state')}(classes·relations·attributes)에서 보고 이어서 물어봐 주세요.
+답을 들을 때마다 승인 없이 바로 반영해 주세요: POST ${api('/api/apply')} {"diff":{"add":[{"list":"classes","name":"Customer","label":"고객","comment":"…","parent":"<상위 개념 id>"}, {"list":"relations","name":"places","label":"주문한다","domain":"<class id>","range":"<class id>","functional":false}, {"list":"attributes","name":"email","label":"이메일","domain":"<class id>","datatype":"string"}],"update":[{"id":"…"}],"remove":["…"]}}. 개념 이름은 UpperCamelCase 영문, 관계·속성은 lowerCamelCase 영문, label은 한글. domain·range·parent는 응답의 실제 id를 써 주세요(새 개념을 먼저 추가하고 id를 받은 뒤 연결).
+반영한 다음 GET ${api('/api/onto')}의 checks를 보고, 오류가 있으면 쉬운 말로 짧게 물어 바로잡아 주세요. 여러 개를 한꺼번에 지우거나 처음부터 다시 할 때만 먼저 물어봐 주세요.`);
+};
+// 인터뷰로 만든 온톨로지 설명 — 같은 자리(file = ONTO_MINE)의 설명 하나를 늘 최신으로 고친다(쌓지 않는다)
+const ONTO_MINE = 'ontology.ttl (인터뷰로 만든 것)';
+$('ontoExplainMine').onclick = () => {
+  const api = (path) => `http://${agentHost}${path}`;
+  const mine = [...workItems.values()].find((w) => w.list === 'explanations' && w.x.file === ONTO_MINE);
+  sendInstruction(`[Explain] 지금 만든 온톨로지를 쉬운 한국어로 설명해 주세요. 원문: GET ${api('/api/onto.ttl')} (요약·검사: GET ${api('/api/onto')})
+온톨로지를 처음 보는 현업 담당자를 위해 이 순서로: ■ 한 줄로(무엇에 관한 것인지, 개념·관계·속성 수) ■ 큰 덩어리(상위 개념과 그 종류) ■ 서로 어떻게 이어지나요("기계는 원료를 투입받아요"처럼, 실제 일 흐름을 따라가는 예 하나) ■ 무엇을 적어 두나요(개념별 정보, 단위 포함, 어려운 용어 풀이) ■ 정해 둔 규칙(하나만 적는 값, 범위 제한) ■ 눈여겨볼 점(빠진 정보, 헷갈릴 수 있는 이름, 검사 결과에서 나온 것). 파일에 실제로 있는 것만 쓰고, 지어내지 마세요.
+저장: ${mine ? `이미 있는 설명을 고쳐 주세요 — POST ${api('/api/apply')} {"diff":{"update":[{"id":"${mine.x.id}","title":"<한 줄 제목>","at":"<오늘 날짜>","text":"<설명>"}]}}` : `POST ${api('/api/apply')} {"diff":{"add":[{"list":"explanations","title":"<한 줄 제목>","file":"${ONTO_MINE}","at":"<오늘 날짜>","text":"<설명>"}]}}`}. 채팅에는 지난 설명과 달라진 점을 두세 줄로 알려 주세요.`);
+};
+$('ontoDrop').querySelector('.onto-pick').onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('ontoFile').click(); } };
+$('ontoFile').onchange = async () => {
+  const f = $('ontoFile').files[0]; $('ontoFile').value = ''; if (!f) return;
+  const st = $('ontoUpSt'); st.textContent = '올리는 중…';
+  let j;
+  try { const r = await post('/api/upload', { name: f.name, type: f.type || 'text/turtle', data: await readAsBase64(f) }); j = await r.json(); if (!r.ok) throw new Error(j.error || r.status); }
+  catch (e) { st.textContent = '올리지 못했어요'; showErr(`Upload failed — ${e.message || e}`); return; }
+  st.textContent = `${f.name} — 설명을 부탁했어요`;
+  const api = (path) => `http://${agentHost}${path}`;
+  sendInstruction(`[Explain] 이 온톨로지 파일을 읽고 쉬운 한국어로 설명해 주세요: ${j.path}
+온톨로지를 처음 보는 현업 담당자를 위해: 무엇에 관한 것인지(한두 문장), 주요 개념과 그 뜻, 개념끼리 어떻게 이어지는지("고객은 주문을 한다"처럼), 각 개념에 적어 두는 정보, 눈에 띄는 규칙이나 이상한 점. 전문 용어는 처음 나올 때 풀어서.
+설명은 바로 저장해 주세요: POST ${api('/api/apply')} {"diff":{"add":[{"list":"explanations","title":"<한 줄 제목>","file":"${f.name.replace(/"/g, '')}","at":"<오늘 날짜>","text":"<설명>"}]}}. 그리고 채팅에는 두세 줄로 요약해 주세요.`);
 };
 
 /* ---- 요청 (에이전트 → 사용자) ----
@@ -1801,6 +2009,7 @@ var SUBTABS = {
   prd: [['current', 'Current'], ['history', 'History']],
   knowledge: [['ontology', 'Ontology'], ['graph', 'Graph'], ['documents', 'Documents']],
   update: STATUS_TABS,
+  work: [['interview', 'Interview'], ['graph', 'Graph'], ['turtle', 'Turtle'], ['explain', 'Explain']],
 };
 var subSel = {}; try { subSel = JSON.parse(localStorage.getItem('ana-subtabs') || '{}') || {}; } catch {}
 var subCounts = {};
