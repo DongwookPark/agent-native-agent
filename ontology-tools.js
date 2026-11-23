@@ -4,7 +4,7 @@
 //
 // 항목 모양(work-ontology.js 참고):
 //   classes:    { id, name, label, comment, parent }                         parent = 다른 class의 id
-//   relations:  { id, name, label, comment, domain, range, functional }      domain·range = class id
+//   relations:  { id, name, label, comment, domain, range, functional }      domain·range = class id, 또는 그 배열(여러 개 = 그중 하나, owl:unionOf)
 //   attributes: { id, name, label, comment, domain, datatype, functional }   datatype = string|integer|decimal|boolean|date|dateTime
 
 const BASE_IRI = process.env.ANA_ONTO_IRI || 'http://example.org/onto#';
@@ -16,9 +16,10 @@ const LOWER = /^[a-z][A-Za-z0-9]*$/;
 const arr = (s, k) => (Array.isArray(s && s[k]) ? s[k].filter((x) => x && x.id != null) : []);
 const lit = (v) => '"' + String(v).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '') + '"';
 const str = (v) => String(v == null ? '' : v).trim();
+const ids = (v) => (Array.isArray(v) ? v : [v]).map(str).filter(Boolean);   // 하나 또는 여러 개의 class id
 // 한글 조사: 마지막 글자에 받침이 있으면 앞, 없으면 뒤(한글이 아니면 둘 다 보인다)
 function josa(w, a, b) {
-  const c = String(w).trim().slice(-1).charCodeAt(0);
+  const c = String(w).trim().replace(/\s*\([^)]*\)$/, '').slice(-1).charCodeAt(0);   // '가격(원)'은 '가격'으로 본다
   if (c >= 0xac00 && c <= 0xd7a3) return w + ((c - 0xac00) % 28 ? a : b);
   return `${w}${a}(${b})`;
 }
@@ -35,6 +36,7 @@ function toTurtle(s, opts = {}) {
   const iri = opts.iri || BASE_IRI;
   const { classes, relations, attributes, byId } = parts(s);
   const ref = (id) => { const c = byId.get(String(id)); return c ? ':' + safeLocal(c) : null; };
+  const refs = (v) => { const l = ids(v).map(ref).filter(Boolean); return l.length > 1 ? `[ a owl:Class ; owl:unionOf ( ${l.join(' ')} ) ]` : l[0] || null; };
   const out = [
     `@prefix : <${iri}> .`,
     '@prefix owl: <http://www.w3.org/2002/07/owl#> .',
@@ -55,7 +57,7 @@ function toTurtle(s, opts = {}) {
   }
   if (relations.length) out.push('', '#### Object properties');
   for (const r of relations) {
-    const l = meta(r), d = ref(r.domain), g = ref(r.range);
+    const l = meta(r), d = refs(r.domain), g = refs(r.range);
     if (d) l.unshift(`rdfs:domain ${d}`);
     if (g) l.splice(d ? 1 : 0, 0, `rdfs:range ${g}`);
     block(`:${safeLocal(r)} a owl:ObjectProperty${r.functional === true ? ', owl:FunctionalProperty' : ''}`, l);
@@ -90,7 +92,8 @@ function check(s) {
     if (!str(x.label)) add('info', x.id, `${who(k, x)}에 한글 이름(label)이 없어요.`);
     if (!str(x.comment)) add('info', x.id, `${who(k, x)}에 설명(comment)이 없어요.`);
   }
-  const missing = (id) => id != null && id !== '' && !byId.has(String(id));
+  const missing = (v) => ids(v).some((id) => !byId.has(id));
+  const none = (v) => !ids(v).length;
   for (const c of classes) {
     if (missing(c.parent)) add('error', c.id, `${who('class', c)}의 상위 개념이 없는 개념을 가리켜요.`);
     // 상위 개념 순환
@@ -101,9 +104,9 @@ function check(s) {
     }
   }
   for (const r of relations) {
-    if (r.domain == null || r.domain === '') add('warn', r.id, `${who('relation', r)}이 어느 개념에서 시작하는지(domain) 정해지지 않았어요.`);
+    if (none(r.domain)) add('warn', r.id, `${who('relation', r)}이 어느 개념에서 시작하는지(domain) 정해지지 않았어요.`);
     else if (missing(r.domain)) add('error', r.id, `${who('relation', r)}의 시작 개념(domain)이 없는 개념이에요.`);
-    if (r.range == null || r.range === '') add('warn', r.id, `${who('relation', r)}이 어느 개념을 가리키는지(range) 정해지지 않았어요.`);
+    if (none(r.range)) add('warn', r.id, `${who('relation', r)}이 어느 개념을 가리키는지(range) 정해지지 않았어요.`);
     else if (missing(r.range)) add('error', r.id, `${who('relation', r)}의 대상 개념(range)이 없는 개념이에요.`);
   }
   for (const a of attributes) {
@@ -114,7 +117,7 @@ function check(s) {
   // 아무것과도 이어지지 않은 개념
   const used = new Set();
   for (const c of classes) if (c.parent != null && c.parent !== '') { used.add(String(c.parent)); used.add(String(c.id)); }
-  for (const r of relations) { used.add(String(r.domain)); used.add(String(r.range)); }
+  for (const r of relations) [...ids(r.domain), ...ids(r.range)].forEach((id) => used.add(id));
   for (const a of attributes) used.add(String(a.domain));
   if (classes.length > 1) for (const c of classes) if (!used.has(String(c.id))) add('info', c.id, `${who('class', c)}은 다른 개념과 아직 이어지지 않았어요.`);
   const rank = { error: 0, warn: 1, info: 2 };
@@ -125,14 +128,14 @@ function check(s) {
 function sentences(s) {
   const { classes, relations, attributes, byId } = parts(s);
   const nm = (x) => str(x && x.label) || str(x && x.name) || '?';
-  const cn = (id) => (byId.has(String(id)) ? nm(byId.get(String(id))) : '?');
+  const cn = (v) => ids(v).map((id) => (byId.has(id) ? nm(byId.get(id)) : '?')).join('·') || '?';
   const out = [];
   for (const c of classes) {
     const bits = [];
     if (c.parent != null && c.parent !== '' && byId.has(String(c.parent))) bits.push(`${josa(nm(c), '은', '는')} ${cn(c.parent)}의 한 종류예요.`);
     const attrs = attributes.filter((a) => String(a.domain) === String(c.id)).map(nm);
     if (attrs.length) bits.push(`${josa(nm(c), '은', '는')} ${josa(attrs.join(', '), '을', '를')} 가져요.`);
-    for (const r of relations.filter((r) => String(r.domain) === String(c.id)))
+    for (const r of relations.filter((r) => ids(r.domain).includes(String(c.id))))
       bits.push(`${josa(nm(c), '은', '는')} ${josa(cn(r.range), '과', '와')} '${nm(r)}' 관계로 이어져요${r.functional === true ? ' (하나만)' : ''}.`);
     out.push({ id: String(c.id), head: nm(c), comment: str(c.comment), lines: bits });
   }

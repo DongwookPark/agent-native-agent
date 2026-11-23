@@ -23,6 +23,7 @@
   --danger: #E0342B; --danger-bg: #FDECEC; --success: #0F9D58; --success-bg: #E7F8EF;
   --warm-bg: #FFF2E5; --warm-fg: #E8731C;
   --c-1: #FF5A8A;
+  --onto: #C8702F; --onto-line: #EBD3C1;
   --r-xl: 24px; --r-lg: 20px; --r: 16px; --r-sm: 12px; --r-xs: 10px;
   --sh-card: 0 1px 3px rgba(0,0,0,.06), 0 4px 14px rgba(0,0,0,.04);
   --sh-fab: 0 8px 20px color-mix(in srgb, var(--acc) 40%, transparent);
@@ -41,7 +42,7 @@
     --text: #F2F4F6; --text-sub: #C2C7CE; --text-weak: #97A1AD;
     --line: #2E3138; --line-2: #292C32; --acc-weak: #16335C;
     --danger-bg: #4A1A18; --danger: #FF9B93; --success-bg: #143D2A; --success: #5BE2A0;
-    --warm-bg: #4A3115; --warm-fg: #FFC489;
+    --warm-bg: #4A3115; --warm-fg: #FFC489; --onto: #E89A5E; --onto-line: #4A3526;
     --acc-strong: #9CC2FF; --sh-card: 0 1px 3px rgba(0,0,0,.4);
   }
 }
@@ -583,12 +584,14 @@ body.sketching { overflow: hidden; }
 .onto-chk.error i { background: var(--danger-bg); color: var(--danger); } .onto-chk.warn i { background: var(--warm-bg); color: var(--warm-fg); } .onto-chk.info i { background: var(--surface-2); color: var(--text-weak); }
 .onto-badge { font-size: 11px; font-weight: 800; padding: 1px 8px; border-radius: 999px; background: var(--surface-2); color: var(--text-weak); } .onto-badge.bad { background: var(--danger-bg); color: var(--danger); } .onto-badge.good { background: var(--success-bg); color: var(--success); }
 .onto-dl { margin-left: auto; font-size: 12.5px; font-weight: 700; color: var(--acc, var(--blue)); text-decoration: none; }
-.onto-ttl { margin: 0; max-height: 420px; overflow: auto; font-size: 12px; line-height: 1.55; background: var(--surface-2); border-radius: var(--r-xs); padding: 12px; white-space: pre; }
-#ontoGraph { overflow-x: auto; } .onto-svg { display: block; width: 100%; min-width: 520px; height: auto; }
-.onto-svg .n circle { fill: var(--acc-weak); stroke: var(--acc); stroke-width: 1.5; } .onto-svg .n text { font-size: 12px; font-weight: 700; fill: var(--text); text-anchor: middle; }
-.onto-svg .n .at { font-size: 10px; font-weight: 500; fill: var(--text-weak); }
-.onto-svg .e { stroke: var(--text-weak); stroke-width: 1.4; fill: none; } .onto-svg .e.sub { stroke-dasharray: 5 4; }
-.onto-svg .el { font-size: 10.5px; fill: var(--text-sub); text-anchor: middle; paint-order: stroke; stroke: var(--surface); stroke-width: 3px; }
+.onto-ttl { margin: 0; max-height: 70vh; overflow: auto; font-size: 12px; line-height: 1.55; background: var(--surface-2); border-radius: var(--r-xs); padding: 12px; white-space: pre; }
+.onto-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12.5px; color: var(--text-sub); margin-bottom: 8px; } .onto-legend b { color: var(--onto); font-weight: 700; }
+.onto-graph-card { padding: 16px 18px; } #ontoGraph { overflow-x: auto; } .onto-svg { display: block; width: 100%; height: auto; }
+.onto-svg .n rect { fill: var(--surface); stroke: var(--onto); stroke-width: 1.6; } .onto-svg .n line { stroke: var(--onto-line); stroke-width: 1; }
+.onto-svg .n .hd { font-size: 14px; font-weight: 800; fill: var(--text); text-anchor: middle; } .onto-svg .n .at { font-size: 12px; fill: var(--text-sub); }
+.onto-svg .e { stroke: var(--onto); stroke-width: 1.6; fill: none; opacity: .85; } .onto-svg .e.sub { stroke: var(--text-weak); stroke-width: 1.2; stroke-dasharray: 5 4; opacity: .7; }
+.onto-svg .ah { fill: var(--onto); } .onto-svg .tri { fill: var(--surface); stroke: var(--text-weak); stroke-width: 1.2; }
+.onto-svg .el { font-size: 11.5px; font-weight: 700; fill: var(--onto); text-anchor: middle; paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
 .onto-ex { padding: 14px 16px; margin-bottom: 10px; } .onto-ex h3 { font-size: 15px; font-weight: 800; margin: 0 0 2px; } .onto-ex .m { font-size: 12px; color: var(--text-weak); margin-bottom: 8px; }
 .onto-ex .t { white-space: pre-wrap; font-size: 14px; line-height: 1.65; }
 /* Knowledge: 온톨로지 목록 · 그래프 */
@@ -871,7 +874,7 @@ body.drawing .fab { display: none !important; }   /* 그리는 동안은 툴바�
   --text: #F2F4F6; --text-sub: #C2C7CE; --text-weak: #97A1AD;
   --line: #2E3138; --line-2: #292C32;
   --danger-bg: #4A1A18; --danger: #FF9B93; --success-bg: #143D2A; --success: #5BE2A0;
-  --warm-bg: #4A3115; --warm-fg: #FFC489;
+  --warm-bg: #4A3115; --warm-fg: #FFC489; --onto: #E89A5E; --onto-line: #4A3526;
   --sh-card: 0 1px 3px rgba(0,0,0,.4);
 }
 
@@ -1263,14 +1266,21 @@ html.kb-open .chat-dock .composer { margin-bottom: 2px; }
     <div id="workArea">
       <!-- 온톨로지 도우미: 만들기(인터뷰 → 온톨로지) · 설명(.ttl → 쉬운 말) -->
       <nav class="subtabs" data-sub="work" role="tablist" aria-label="Work"></nav>
-      <div data-subsec="build">
-        <div class="toolbar"><span class="cnt" id="ontoSum"></span><span class="sp"></span><button class="ok onto-go" id="ontoInterview">인터뷰 시작하기</button></div>
+      <div class="toolbar" data-subsec="interview graph turtle"><span class="cnt" id="ontoSum"></span><span class="sp"></span><button class="ok onto-go" id="ontoInterview">인터뷰 시작하기</button></div>
+      <div data-subsec="interview">
         <div class="onto-grid">
           <section class="card onto-panel"><h3>쉬운 말 요약</h3><div id="ontoSummary"></div></section>
           <section class="card onto-panel"><h3>검사 결과 <span class="onto-badge" id="ontoCheckN"></span></h3><div id="ontoChecks"></div></section>
-          <section class="card onto-panel onto-wide"><h3>그림</h3><div id="ontoGraph"></div></section>
-          <section class="card onto-panel onto-wide"><h3>Turtle 원문 <a class="onto-dl" href="/api/onto.ttl?download=1">.ttl 내려받기</a></h3><pre class="onto-ttl" id="ontoTtl"></pre></section>
         </div>
+      </div>
+      <div data-subsec="graph" hidden>
+        <section class="card onto-graph-card">
+          <div class="onto-legend"><span><b>→</b> 관계 (domain → range)</span><span><b style="color:var(--text-weak)">- - ▷</b> 상위 개념</span><span>상자 안: 속성</span></div>
+          <div id="ontoGraph"></div>
+        </section>
+      </div>
+      <div data-subsec="turtle" hidden>
+        <section class="card onto-panel"><h3>Turtle 원문 <a class="onto-dl" href="/api/onto.ttl?download=1">.ttl 내려받기</a></h3><pre class="onto-ttl" id="ontoTtl"></pre></section>
       </div>
       <div data-subsec="explain" hidden>
         <label class="doc-drop" id="ontoDrop"><span>온톨로지 파일(<b>.ttl</b>, .owl, .rdf)을 올리면 무엇을 담고 있는지 쉬운 말로 풀어 드려요.</span>
@@ -1634,38 +1644,103 @@ async function renderOnto(s) {
   $('ontoChecks').innerHTML = o.checks.length ? o.checks.map((c) => `<div class="onto-chk ${c.level}"><i>${LV[c.level]}</i><span>${escapeHtml(c.msg)}</span></div>`).join('')
     : `<div class="onto-empty">${cls.length ? '규칙에 어긋난 곳이 없어요.' : '만든 온톨로지를 규칙에 맞는지 여기서 검사해요.'}</div>`;
 }
-// 개념은 원, 관계는 화살표(이름), 상위 개념은 점선 화살표('종류'). 같은 두 개념 사이의 여러 선은 휘어서 나눈다
+// 개념은 상자(위: 이름, 아래: 속성 '이름 : 값 종류'), 관계는 화살표(이름), 상위 개념은 점선 + 빈 삼각형.
+// 상위 개념의 깊이로 줄을 나누고(맨 위 = 상위 개념이 없는 것), 한 줄이 넘치면 다음 줄로 넘긴다. 하위 개념은 상위 개념 순서를 따른다.
 function ontoGraphSvg(cls, rel, att) {
-  const n = cls.length, W = 760, R = 34, H = n <= 2 ? 260 : Math.min(620, 260 + n * 22), cx = W / 2, cy = H / 2;
-  const rx = n === 1 ? 0 : W / 2 - 110, ry = n === 1 ? 0 : H / 2 - 70;
-  const pos = new Map(cls.map((c, i) => { const a = -Math.PI / 2 + (2 * Math.PI * i) / n; return [String(c.id), { x: cx + rx * Math.cos(a), y: cy + ry * Math.sin(a) }]; }));
+  const W = 1100, PADX = 24, GAPX = 34, GAPY = 96, HEAD = 30, LINE = 17, MAXA = 6;
   const nm = (x) => String(x.label || x.name || '?');
-  const edges = [];
-  for (const c of cls) if (c.parent != null && pos.has(String(c.parent))) edges.push({ a: String(c.id), b: String(c.parent), t: '종류', sub: true });
-  for (const r of rel) if (pos.has(String(r.domain)) && pos.has(String(r.range))) edges.push({ a: String(r.domain), b: String(r.range), t: nm(r) });
-  const pairN = new Map(), pairI = new Map(), key = (e) => [e.a, e.b].sort().join('|');
-  edges.forEach((e) => pairN.set(key(e), (pairN.get(key(e)) || 0) + 1));
-  const lines = edges.map((e) => {
-    const k = key(e), i = pairI.get(k) || 0; pairI.set(k, i + 1);
-    const p = pos.get(e.a), q = pos.get(e.b);
-    if (e.a === e.b) {   // 자기 자신을 가리키는 관계: 위쪽 고리
-      const y0 = p.y - R, lift = 46 + i * 18;
-      return `<path class="e" d="M${p.x - 12} ${y0} C ${p.x - 40} ${y0 - lift}, ${p.x + 40} ${y0 - lift}, ${p.x + 12} ${y0}" marker-end="url(#ontoArr)"/><text class="el" x="${p.x}" y="${y0 - lift * 0.75}">${escapeHtml(e.t)}</text>`;
+  const tw = (s, px) => [...String(s)].reduce((n, ch) => n + (ch.charCodeAt(0) > 0x2e80 ? px : px * 0.58), 0);
+  const byId = new Map(cls.map((c) => [String(c.id), c]));
+  const depth = (c) => { let d = 0, p = c.parent, seen = new Set(); while (p != null && p !== '' && byId.has(String(p)) && !seen.has(String(p)) && d < 8) { seen.add(String(p)); d++; p = byId.get(String(p)).parent; } return d; };
+  const box = new Map(cls.map((c) => {
+    const at = att.filter((a) => String(a.domain) === String(c.id)).map((a) => `${nm(a)} : ${a.datatype || 'string'}`);
+    const lines = at.length > MAXA ? [...at.slice(0, MAXA - 1), `… 외 ${at.length - MAXA + 1}개`] : at;
+    const w = Math.max(96, tw(nm(c), 14) + 36, ...lines.map((l) => tw(l, 12) + 28));
+    return [String(c.id), { c, lines, w: Math.ceil(w), h: HEAD + (lines.length ? lines.length * LINE + 12 : 6) }];
+  }));
+  // 줄 나누기: 깊이별, 하위 개념은 상위 개념의 순서대로
+  const levels = [];
+  cls.forEach((c) => { (levels[depth(c)] ||= []).push(String(c.id)); });
+  const order = new Map();
+  const rows = [];
+  levels.forEach((ids, d) => {
+    if (d > 0) ids.sort((a, b) => (order.get(String(byId.get(a).parent)) ?? 0) - (order.get(String(byId.get(b).parent)) ?? 0));
+    // 같은 상위 개념의 하위 개념은 한 묶음 — 남은 자리에 묶음이 다 안 들어가면 새 줄에서 시작한다
+    const groups = []; ids.forEach((id) => { const p = d ? String(byId.get(id).parent) : ''; if (!groups.length || groups[groups.length - 1].p !== p || !d) groups.push({ p, ids: [] }); groups[groups.length - 1].ids.push(id); });
+    let row = [], x = PADX;
+    for (const g of groups) {
+      const gw = g.ids.reduce((n, id) => n + box.get(id).w + GAPX, 0);
+      if (row.length && x + gw > W - PADX + GAPX) { rows.push(row); row = []; x = PADX; }
+      for (const id of g.ids) { const b = box.get(id); if (row.length && x + b.w > W - PADX) { rows.push(row); row = []; x = PADX; } row.push(id); x += b.w + GAPX; }
     }
-    const dx = q.x - p.x, dy = q.y - p.y, d = Math.hypot(dx, dy) || 1, ux = dx / d, uy = dy / d;
-    const total = pairN.get(k), sign = e.a < e.b ? 1 : -1, bend = (i - (total - 1) / 2) * 34 * sign;
-    const sx = p.x + ux * R, sy = p.y + uy * R, tx = q.x - ux * (R + 4), ty = q.y - uy * (R + 4);
-    const mx = (sx + tx) / 2 - uy * bend, my = (sy + ty) / 2 + ux * bend;
-    const lx = (sx + tx) / 4 + mx / 2, ly = (sy + ty) / 4 + my / 2;
-    return `<path class="e${e.sub ? ' sub' : ''}" d="M${sx} ${sy} Q ${mx} ${my} ${tx} ${ty}" marker-end="url(#ontoArr)"/><text class="el" x="${lx}" y="${ly + 3}">${escapeHtml(e.t)}</text>`;
-  }).join('');
+    if (row.length) rows.push(row);
+  });
+  let y = 0, k = 0;
+  for (const row of rows) {
+    const total = row.reduce((n, id) => n + box.get(id).w, 0) + GAPX * (row.length - 1);
+    let x = Math.max(PADX, (W - total) / 2);
+    const rh = Math.max(...row.map((id) => box.get(id).h));
+    for (const id of row) { const b = box.get(id); b.x = x; b.y = y; x += b.w + GAPX; order.set(id, k++); }
+    y += rh + GAPY;
+  }
+  // 같은 줄 안의 관계(자기 자신 포함)는 상자 위로 둥글게 넘긴다 — 가운데 상자에 가리지 않게. 겹치는 구간은 한 층씩 위로
+  const ARC0 = 26, ARCS = 22, arcs = [], used = [];
+  const rowOf = (id) => box.get(id).y;
+  const edgeList = [];
+  for (const c of cls) if (c.parent != null && byId.has(String(c.parent))) edgeList.push({ a: String(c.id), b: String(c.parent), t: '', sub: true });
+  const idl = (v) => (Array.isArray(v) ? v : [v]).map((x) => String(x == null ? '' : x)).filter((x) => byId.has(x));   // 하나 또는 여러 개(그중 하나)
+  for (const r of rel) for (const d of idl(r.domain)) for (const g of idl(r.range)) edgeList.push({ a: d, b: g, t: nm(r) });
+  edgeList.filter((e) => !e.sub && rowOf(e.a) === rowOf(e.b)).map((e) => {
+    const A = box.get(e.a), B = box.get(e.b), ax = A.x + A.w / 2, bx = B.x + B.w / 2;
+    const lo = Math.min(ax, bx) - (e.a === e.b ? 34 : 0), hi = Math.max(ax, bx) + (e.a === e.b ? 34 : 0);
+    return { e, lo, hi, row: A.y };
+  }).sort((p, q) => (p.hi - p.lo) - (q.hi - q.lo)).forEach((a) => {
+    let L = 0; while ((used[L] ||= []).some((u) => u.row === a.row && u.lo < a.hi + 40 && a.lo < u.hi + 40)) L++;
+    used[L].push(a); a.e.arc = ARC0 + L * ARCS; arcs.push(a);
+  });
+  const lift = Math.max(0, ...arcs.filter((a) => a.row === 0).map((a) => a.e.arc));
+  const top = 30 + lift;
+  for (const b of box.values()) b.y += top;
+  const H = y - GAPY + top + 30;
+  // 상자 가장자리에서 시작·끝나도록
+  const edgePt = (b, tx, ty, pad) => {
+    const cx = b.x + b.w / 2, cy = b.y + b.h / 2, dx = tx - cx, dy = ty - cy;
+    const t = Math.min(dx ? (b.w / 2 + pad) / Math.abs(dx) : Infinity, dy ? (b.h / 2 + pad) / Math.abs(dy) : Infinity);
+    return [cx + dx * t, cy + dy * t];
+  };
+  const edges = edgeList;
+  const key = (e) => [e.a, e.b].sort().join('|'), pairN = new Map(), pairI = new Map();
+  edges.forEach((e) => pairN.set(key(e), (pairN.get(key(e)) || 0) + 1));
+  const paths = [], labels = [];
+  for (const e of edges) {
+    const k2 = key(e), i = pairI.get(k2) || 0; pairI.set(k2, i + 1);
+    const A = box.get(e.a), B = box.get(e.b);
+    if (e.arc) {   // 같은 줄(또는 자기 자신): 위로 넘어가는 호. 꼭대기에 이름
+      const y0 = A.y, up = e.arc, self = e.a === e.b;
+      const sx = A.x + A.w / 2 + (self ? -16 : B.x > A.x ? 10 : -10), tx = B.x + B.w / 2 + (self ? 16 : B.x > A.x ? -10 : 10);
+      const mx = (sx + tx) / 2, k = self ? 1.35 : 1;
+      paths.push(self
+        ? `<path class="e" d="M${sx} ${y0} C ${sx - 18} ${y0 - up * k}, ${tx + 18} ${y0 - up * k}, ${tx} ${y0 - 3}" marker-end="url(#ontoArr)"/>`
+        : `<path class="e" d="M${sx} ${y0} C ${sx} ${y0 - up * 1.33}, ${tx} ${y0 - up * 1.33}, ${tx} ${y0 - 3}" marker-end="url(#ontoArr)"/>`);
+      labels.push(`<text class="el" x="${mx}" y="${y0 - up + 4}">${escapeHtml(e.t)}</text>`);
+      continue;
+    }
+    const bc = [B.x + B.w / 2, B.y + B.h / 2], ac = [A.x + A.w / 2, A.y + A.h / 2];
+    const [sx, sy] = edgePt(A, bc[0], bc[1], 0), [tx, ty] = edgePt(B, ac[0], ac[1], 3);
+    const dx = tx - sx, dy = ty - sy, d = Math.hypot(dx, dy) || 1;
+    const sign = e.a < e.b ? 1 : -1, bend = (i - (pairN.get(k2) - 1) / 2) * 30 * sign;
+    const mx = (sx + tx) / 2 - (dy / d) * bend, my = (sy + ty) / 2 + (dx / d) * bend;
+    paths.push(`<path class="e${e.sub ? ' sub' : ''}" d="M${sx.toFixed(1)} ${sy.toFixed(1)} Q ${mx.toFixed(1)} ${my.toFixed(1)} ${tx.toFixed(1)} ${ty.toFixed(1)}" marker-end="url(#${e.sub ? 'ontoTri' : 'ontoArr'})"/>`);
+    if (e.t) labels.push(`<text class="el" x="${((sx + tx) / 4 + mx / 2).toFixed(1)}" y="${((sy + ty) / 4 + my / 2 + 4).toFixed(1)}">${escapeHtml(e.t)}</text>`);
+  }
   const nodes = cls.map((c) => {
-    const p = pos.get(String(c.id)), at = att.filter((a) => String(a.domain) === String(c.id)).map(nm);
-    const atl = at.length ? `<text class="at" x="${p.x}" y="${p.y + R + 14}">${escapeHtml(at.slice(0, 3).join(', ') + (at.length > 3 ? ` 외 ${at.length - 3}` : ''))}</text>` : '';
-    const t = nm(c);
-    return `<g class="n"><circle cx="${p.x}" cy="${p.y}" r="${R}"/><text x="${p.x}" y="${p.y + 4}">${escapeHtml(t.length > 7 ? t.slice(0, 6) + '…' : t)}</text><title>${escapeHtml(`${t} (${c.name || ''})${c.comment ? '\n' + c.comment : ''}`)}</title>${atl}</g>`;
+    const b = box.get(String(c.id)), cx = b.x + b.w / 2;
+    const at = b.lines.map((l, j) => `<text class="at" x="${b.x + 14}" y="${b.y + HEAD + 14 + j * LINE}">${escapeHtml(l)}</text>`).join('');
+    return `<g class="n"><title>${escapeHtml(`${nm(c)} (${c.name || ''})${c.comment ? '\n' + c.comment : ''}`)}</title><rect x="${b.x}" y="${b.y}" width="${b.w}" height="${b.h}" rx="10"/><text class="hd" x="${cx}" y="${b.y + 20}">${escapeHtml(nm(c))}</text>${b.lines.length ? `<line x1="${b.x + 10}" x2="${b.x + b.w - 10}" y1="${b.y + HEAD}" y2="${b.y + HEAD}"/>` : ''}${at}</g>`;
   }).join('');
-  return `<svg class="onto-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="온톨로지 그림"><defs><marker id="ontoArr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--text-weak)"/></marker></defs>${lines}${nodes}</svg>`;
+  return `<svg class="onto-svg" viewBox="0 0 ${W} ${H}" style="min-width:${Math.min(W, 860)}px" role="img" aria-label="온톨로지 그림"><defs>
+<marker id="ontoArr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ah"/></marker>
+<marker id="ontoTri" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M1 1L11 6L1 11z" class="tri"/></marker></defs>${paths.join('')}${nodes}${labels.join('')}</svg>`;
 }
 function renderOntoExplains(list) {
   const el = $('ontoExplains'); if (!el) return;
@@ -1924,7 +1999,7 @@ var SUBTABS = {
   prd: [['current', 'Current'], ['history', 'History']],
   knowledge: [['ontology', 'Ontology'], ['graph', 'Graph'], ['documents', 'Documents']],
   update: STATUS_TABS,
-  work: [['build', '만들기'], ['explain', '설명']],
+  work: [['interview', 'Interview'], ['graph', 'Graph'], ['turtle', 'Turtle'], ['explain', 'Explain']],
 };
 var subSel = {}; try { subSel = JSON.parse(localStorage.getItem('ana-subtabs') || '{}') || {}; } catch {}
 var subCounts = {};
