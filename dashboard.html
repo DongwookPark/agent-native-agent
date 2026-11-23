@@ -592,6 +592,16 @@ body.sketching { overflow: hidden; }
 .onto-svg .e { stroke: var(--onto); stroke-width: 1.6; fill: none; opacity: .85; } .onto-svg .e.sub { stroke: var(--text-weak); stroke-width: 1.2; stroke-dasharray: 5 4; opacity: .7; }
 .onto-svg .ah { fill: var(--onto); } .onto-svg .tri { fill: var(--surface); stroke: var(--text-weak); stroke-width: 1.2; }
 .onto-svg .el { font-size: 11.5px; font-weight: 700; fill: var(--onto); text-anchor: middle; paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+.onto-link { margin-left: auto; font-size: 12.5px; font-weight: 700; color: var(--acc, var(--blue)); }
+.onto-hint { margin: -4px 0 10px; font-size: 12.5px; color: var(--text-weak); }
+.onto-q { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-top: 1px solid var(--line-2); font-size: 14px; } .onto-q:first-child { border-top: none; }
+.onto-q .st { flex: 0 0 auto; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 999px; margin-top: 1px; background: var(--surface-2); color: var(--text-weak); }
+.onto-q .st.answerable { background: var(--success-bg); color: var(--success); } .onto-q .st.missing { background: var(--warm-bg); color: var(--warm-fg); }
+.onto-q .nt { font-size: 12.5px; color: var(--text-sub); margin-top: 2px; } .onto-q .nd { font-size: 11.5px; color: var(--text-weak); margin-top: 2px; }
+.onto-tbl-wrap { overflow-x: auto; margin-bottom: 14px; padding: 12px 14px; } .onto-tbl-wrap h3 { font-size: 14px; font-weight: 800; margin: 0 0 8px; }
+.onto-tbl { border-collapse: collapse; font-size: 13px; min-width: 100%; } .onto-tbl th, .onto-tbl td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--line-2); white-space: nowrap; }
+.onto-tbl th { font-size: 12px; color: var(--text-weak); font-weight: 700; } .onto-tbl td.e { color: var(--text-weak); }
+.onto-ext { font-size: 11px; color: var(--text-weak); margin-left: 6px; }
 .onto-ex { padding: 14px 16px; margin-bottom: 10px; } .onto-ex h3 { font-size: 15px; font-weight: 800; margin: 0 0 2px; } .onto-ex .m { font-size: 12px; color: var(--text-weak); margin-bottom: 8px; }
 .onto-ex .t { white-space: pre-wrap; font-size: 14px; line-height: 1.65; }
 /* Knowledge: 온톨로지 목록 · 그래프 */
@@ -1266,9 +1276,11 @@ html.kb-open .chat-dock .composer { margin-bottom: 2px; }
     <div id="workArea">
       <!-- 온톨로지 도우미: 만들기(인터뷰 → 온톨로지) · 설명(.ttl → 쉬운 말) -->
       <nav class="subtabs" data-sub="work" role="tablist" aria-label="Work"></nav>
-      <div class="toolbar" data-subsec="interview graph turtle"><span class="cnt" id="ontoSum"></span><span class="sp"></span><button class="ok onto-go" id="ontoInterview">인터뷰 시작하기</button></div>
+      <div class="toolbar" data-subsec="interview graph data turtle"><span class="cnt" id="ontoSum"></span><span class="sp"></span><button class="ok onto-go" id="ontoInterview">인터뷰 시작하기</button></div>
       <div data-subsec="interview">
         <div class="onto-grid">
+          <section class="card onto-panel onto-wide"><h3>답해야 할 질문 <span class="onto-badge" id="ontoQN"></span><button class="onto-link" id="ontoQCheck">다시 확인하기</button></h3>
+            <p class="onto-hint">이 온톨로지로 답하고 싶은 질문이에요. 질문마다 지금 만든 것으로 답할 수 있는지 보여요 — 연결이 빠진 것이 다음 인터뷰 질문이 돼요.</p><div id="ontoQuestions"></div></section>
           <section class="card onto-panel"><h3>쉬운 말 요약</h3><div id="ontoSummary"></div></section>
           <section class="card onto-panel"><h3>검사 결과 <span class="onto-badge" id="ontoCheckN"></span></h3><div id="ontoChecks"></div></section>
         </div>
@@ -1278,6 +1290,11 @@ html.kb-open .chat-dock .composer { margin-bottom: 2px; }
           <div class="onto-legend"><span><b>→</b> 관계 (domain → range)</span><span><b style="color:var(--text-weak)">- - ▷</b> 상위 개념</span><span>상자 안: 속성</span></div>
           <div id="ontoGraph"></div>
         </section>
+      </div>
+      <div data-subsec="data" hidden>
+        <label class="doc-drop" id="ontoDataDrop"><span><b>설비 대장</b>(엑셀·CSV)이나 <b>MSDS</b>(PDF)를 올리면 실제 기계·물질을 채워 드려요. 틀에 없는 칸은 추가할지 물어봐요.</span>
+          <input type="file" id="ontoDataFile" accept=".xlsx,.xls,.csv,.tsv,.pdf,.txt" hidden><span class="ok onto-pick" role="button" tabindex="0">파일 고르기</span><span class="doc-status" id="ontoDataSt"></span></label>
+        <div id="ontoData"></div>
       </div>
       <div data-subsec="turtle" hidden>
         <section class="card onto-panel"><h3>Turtle 원문 <a class="onto-dl" href="/api/onto.ttl?download=1">.ttl 내려받기</a></h3><pre class="onto-ttl" id="ontoTtl"></pre></section>
@@ -1623,20 +1640,23 @@ Verify with the tests and a look at the page. Then update the PRD so it says wha
 
 /* ---- Work: 온톨로지 도우미 ----
    만들기: 인터뷰 답이 바로 work-graph.json의 classes·relations·attributes에 들어가고, 여기서 요약·그림·Turtle·검사를 본다(GET /api/onto).
-   설명: .ttl을 올리면 에이전트가 읽고 쉬운 말 설명을 explanations에 남긴다. */
+   설명: .ttl을 올리면 에이전트가 읽고 쉬운 말 설명을 explanations에 남긴다.
+   질문: questions(답해야 할 질문) · 실제 데이터: individuals(1번 반응기, 에탄올) — 설비 대장·MSDS를 올리면 에이전트가 승인받아 채운다. */
 let ontoSeq = 0;
 async function renderOnto(s) {
   if (!$('ontoSummary')) return;
   const my = ++ontoSeq;
   const L = (k) => (s && Array.isArray(s[k]) ? s[k] : []);
-  const cls = L('classes'), rel = L('relations'), att = L('attributes');
-  $('ontoSum').textContent = `개념 ${cls.length} · 관계 ${rel.length} · 속성 ${att.length}`;
-  $('ontoGraph').innerHTML = cls.length ? ontoGraphSvg(cls, rel, att) : '<div class="onto-empty">아직 개념이 없어요. 인터뷰를 시작하면 여기에 그림이 그려져요.</div>';
+  const cls = L('classes'), rel = L('relations'), att = L('attributes'), ind = L('individuals');
+  $('ontoSum').textContent = `개념 ${cls.length} · 관계 ${rel.length} · 속성 ${att.length} · 실제 항목 ${ind.length}`;
+  $('ontoGraph').innerHTML = cls.length ? ontoGraphSvg(cls, rel, att, ind) : '<div class="onto-empty">아직 개념이 없어요. 인터뷰를 시작하면 여기에 그림이 그려져요.</div>';
   renderOntoExplains(L('explanations'));
+  renderOntoQuestions(L('questions'), [...cls, ...rel, ...att]);
+  renderOntoData(cls, rel, att, ind);
   let o; try { o = await getJSON('/api/onto'); } catch { return; }
   if (my !== ontoSeq) return;
   $('ontoTtl').textContent = o.ttl;
-  $('ontoSummary').innerHTML = o.summary.length ? o.summary.map((c) => `<div class="onto-cls"><b>${escapeHtml(c.head)}</b>${c.comment ? `<div class="c">${escapeHtml(c.comment)}</div>` : ''}${c.lines.length ? `<ul>${c.lines.map((l) => `<li>${escapeHtml(l)}</li>`).join('')}</ul>` : ''}</div>`).join('')
+  $('ontoSummary').innerHTML = o.summary.length ? o.summary.map((c) => `<div class="onto-cls"><b>${escapeHtml(c.head)}</b>${c.external ? `<span class="onto-ext" title="${escapeHtml(c.external)}">↗ 표준 ${escapeHtml(c.external.split(/[/#]/).pop())}</span>` : ''}${c.comment ? `<div class="c">${escapeHtml(c.comment)}</div>` : ''}${c.lines.length ? `<ul>${c.lines.map((l) => `<li>${escapeHtml(l)}</li>`).join('')}</ul>` : ''}</div>`).join('')
     : '<div class="onto-empty">인터뷰에 답하면 "고객은 주문을 할 수 있다" 같은 문장이 여기에 쌓여요.</div>';
   const bad = o.checks.filter((c) => c.level === 'error').length, warn = o.checks.filter((c) => c.level === 'warn').length;
   const LV = { error: '오류', warn: '주의', info: '참고' };
@@ -1647,7 +1667,7 @@ async function renderOnto(s) {
 }
 // 개념은 상자(위: 이름, 아래: 속성 '이름 : 값 종류'), 관계는 화살표(이름), 상위 개념은 점선 + 빈 삼각형.
 // 상위 개념의 깊이로 줄을 나누고(맨 위 = 상위 개념이 없는 것), 한 줄이 넘치면 다음 줄로 넘긴다. 하위 개념은 상위 개념 순서를 따른다.
-function ontoGraphSvg(cls, rel, att) {
+function ontoGraphSvg(cls, rel, att, ind = []) {
   const W = 1100, PADX = 24, GAPX = 34, GAPY = 96, HEAD = 30, LINE = 17, MAXA = 6;
   const nm = (x) => String(x.label || x.name || '?');
   const tw = (s, px) => [...String(s)].reduce((n, ch) => n + (ch.charCodeAt(0) > 0x2e80 ? px : px * 0.58), 0);
@@ -1656,7 +1676,7 @@ function ontoGraphSvg(cls, rel, att) {
   const box = new Map(cls.map((c) => {
     const at = att.filter((a) => String(a.domain) === String(c.id)).map((a) => `${nm(a)} : ${a.datatype || 'string'}`);
     const lines = at.length > MAXA ? [...at.slice(0, MAXA - 1), `… 외 ${at.length - MAXA + 1}개`] : at;
-    const w = Math.max(96, tw(nm(c), 14) + 36, ...lines.map((l) => tw(l, 12) + 28));
+    const w = Math.max(96, tw(nm(c), 14) + 36 + (c.external ? 18 : 0) + (ind.some((x) => String(x.class) === String(c.id)) ? 30 : 0), ...lines.map((l) => tw(l, 12) + 28));
     return [String(c.id), { c, lines, w: Math.ceil(w), h: HEAD + (lines.length ? lines.length * LINE + 12 : 6) }];
   }));
   // 줄 나누기: 깊이별, 하위 개념은 상위 개념의 순서대로
@@ -1737,23 +1757,77 @@ function ontoGraphSvg(cls, rel, att) {
   const nodes = cls.map((c) => {
     const b = box.get(String(c.id)), cx = b.x + b.w / 2;
     const at = b.lines.map((l, j) => `<text class="at" x="${b.x + 14}" y="${b.y + HEAD + 14 + j * LINE}">${escapeHtml(l)}</text>`).join('');
-    return `<g class="n"><title>${escapeHtml(`${nm(c)} (${c.name || ''})${c.comment ? '\n' + c.comment : ''}`)}</title><rect x="${b.x}" y="${b.y}" width="${b.w}" height="${b.h}" rx="10"/><text class="hd" x="${cx}" y="${b.y + 20}">${escapeHtml(nm(c))}</text>${b.lines.length ? `<line x1="${b.x + 10}" x2="${b.x + b.w - 10}" y1="${b.y + HEAD}" y2="${b.y + HEAD}"/>` : ''}${at}</g>`;
+    const n = ind.filter((x) => String(x.class) === String(c.id)).length;
+    return `<g class="n"><title>${escapeHtml(`${nm(c)} (${c.name || ''})${c.comment ? '\n' + c.comment : ''}${c.external ? '\n표준: ' + c.external : ''}${n ? `\n실제 항목 ${n}개` : ''}`)}</title><rect x="${b.x}" y="${b.y}" width="${b.w}" height="${b.h}" rx="10"/><text class="hd" x="${cx}" y="${b.y + 20}">${escapeHtml(nm(c) + (n ? ` · ${n}` : '') + (c.external ? ' ↗' : ''))}</text>${b.lines.length ? `<line x1="${b.x + 10}" x2="${b.x + b.w - 10}" y1="${b.y + HEAD}" y2="${b.y + HEAD}"/>` : ''}${at}</g>`;
   }).join('');
   return `<svg class="onto-svg" viewBox="0 0 ${W} ${H}" style="min-width:${Math.min(W, 860)}px" role="img" aria-label="온톨로지 그림"><defs>
 <marker id="ontoArr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ah"/></marker>
 <marker id="ontoTri" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto-start-reverse"><path d="M1 1L11 6L1 11z" class="tri"/></marker></defs>${paths.join('')}${nodes}${labels.join('')}</svg>`;
+}
+const Q_ST = { answerable: '답할 수 있음', missing: '연결이 빠짐', open: '확인 전' };
+function renderOntoQuestions(qs, things) {
+  const el = $('ontoQuestions'); if (!el) return;
+  const byId = new Map(things.map((x) => [String(x.id), x.label || x.name]));
+  const ok = qs.filter((q) => q.status === 'answerable').length;
+  $('ontoQN').textContent = qs.length ? `${ok}/${qs.length}` : '';
+  $('ontoQN').className = 'onto-badge' + (qs.length && ok === qs.length ? ' good' : '');
+  el.innerHTML = qs.length ? qs.map((q) => {
+    const st = Q_ST[q.status] ? q.status : 'open';
+    const needs = (Array.isArray(q.needs) ? q.needs : [q.needs]).filter(Boolean).map((id) => byId.get(String(id))).filter(Boolean);
+    return `<div class="onto-q"><span class="st ${st}">${Q_ST[st]}</span><div><div>${escapeHtml(q.text || '')}</div>${q.note ? `<div class="nt">${escapeHtml(q.note)}</div>` : ''}${needs.length ? `<div class="nd">쓰는 것: ${escapeHtml(needs.join(' · '))}</div>` : ''}</div></div>`;
+  }).join('') : '<div class="onto-empty">아직 질문이 없어요. 인터뷰를 시작하면 먼저 "이걸로 무엇을 알고 싶은지"부터 여쭤볼게요.</div>';
+}
+// 실제 항목: 개념별 표 — 칸은 그 개념(과 상위 개념)의 속성·관계
+function renderOntoData(cls, rel, att, ind) {
+  const el = $('ontoData'); if (!el) return;
+  if (!ind.length) { el.innerHTML = '<div class="onto-empty">아직 실제 기계·물질이 없어요. 설비 대장이나 MSDS를 올리거나, 채팅으로 "1번 반응기는 R-01, A라인에 있어"처럼 말해 주세요.</div>'; return; }
+  const byId = new Map(cls.map((c) => [String(c.id), c])), indById = new Map(ind.map((x) => [String(x.id), x]));
+  const lineage = (id) => { const out = []; let p = String(id || ''); while (p && byId.has(p) && !out.includes(p)) { out.push(p); p = String(byId.get(p).parent || ''); } return out; };
+  const nm = (x) => String((x && (x.label || x.name)) || '?');
+  el.innerHTML = cls.filter((c) => ind.some((x) => String(x.class) === String(c.id))).map((c) => {
+    const line = lineage(c.id), rows = ind.filter((x) => String(x.class) === String(c.id));
+    const as = att.filter((a) => line.includes(String(a.domain)));
+    const rs = rel.filter((r) => (Array.isArray(r.domain) ? r.domain : [r.domain]).some((d) => line.includes(String(d))));
+    const cell = (v) => { const l = (Array.isArray(v) ? v : [v]).filter((y) => y !== '' && y != null); return l.length ? `<td>${escapeHtml(l.join(', '))}</td>` : '<td class="e">—</td>'; };
+    return `<section class="card onto-tbl-wrap"><h3>${escapeHtml(nm(c))} <span class="onto-badge">${rows.length}</span></h3><table class="onto-tbl"><thead><tr><th>이름</th>${as.map((a) => `<th>${escapeHtml(nm(a))}</th>`).join('')}${rs.map((r) => `<th>${escapeHtml(nm(r))}</th>`).join('')}</tr></thead><tbody>${rows.map((x) => `<tr><td><b>${escapeHtml(nm(x))}</b></td>${as.map((a) => cell(x[a.name])).join('')}${rs.map((r) => cell((Array.isArray(x[r.name]) ? x[r.name] : [x[r.name]]).filter(Boolean).map((id) => nm(indById.get(String(id)) || { name: id })))).join('')}</tr>`).join('')}</tbody></table></section>`;
+  }).join('');
 }
 function renderOntoExplains(list) {
   const el = $('ontoExplains'); if (!el) return;
   el.innerHTML = list.length ? list.slice().reverse().map((x) => `<article class="card onto-ex"><h3>${escapeHtml(x.title || x.file || '설명')}</h3><div class="m">${escapeHtml([x.file, String(x.at || '').slice(0, 10)].filter(Boolean).join(' · '))}</div><div class="t">${escapeHtml(x.text || '')}</div></article>`).join('')
     : '<div class="onto-empty">아직 설명한 파일이 없어요.</div>';
 }
+// 질문 상태 확인 방법 — 인터뷰·다시 확인하기가 같이 쓴다
+const ontoQRule = (api) => `질문 상태: 질문마다 지금 온톨로지(GET ${api('/api/onto')})로 답할 수 있는지 따져서 POST ${api('/api/apply')} {"diff":{"update":[{"id":"<질문 id>","status":"answerable|missing","needs":["<쓰는 개념·관계·속성 id>"],"note":"<빠진 것, 또는 어떤 연결로 답하는지 — 쉬운 말 한 줄>"}]}}로 고쳐 주세요.`;
 $('ontoInterview').onclick = () => {
   const api = (path) => `http://${agentHost}${path}`;
   sendInstruction(`[Interview] 온톨로지 인터뷰를 시작(또는 이어서) 해 주세요.
-나는 온톨로지를 처음 접하는 현업 담당자예요. 한국어로, 쉬운 말로, 한 번에 짧은 질문 하나씩 물어봐 주세요(다루는 대상 → 그 대상의 종류 → 서로 어떻게 이어지는지 → 각 대상에 적어 두는 정보 순서). 지금까지 만든 것은 GET ${api('/api/onto')}와 GET ${api('/api/state')}(classes·relations·attributes)에서 보고 이어서 물어봐 주세요.
-답을 들을 때마다 승인 없이 바로 반영해 주세요: POST ${api('/api/apply')} {"diff":{"add":[{"list":"classes","name":"Customer","label":"고객","comment":"…","parent":"<상위 개념 id>"}, {"list":"relations","name":"places","label":"주문한다","domain":"<class id>","range":"<class id>","functional":false}, {"list":"attributes","name":"email","label":"이메일","domain":"<class id>","datatype":"string"}],"update":[{"id":"…"}],"remove":["…"]}}. 개념 이름은 UpperCamelCase 영문, 관계·속성은 lowerCamelCase 영문, label은 한글. domain·range·parent는 응답의 실제 id를 써 주세요(새 개념을 먼저 추가하고 id를 받은 뒤 연결).
-반영한 다음 GET ${api('/api/onto')}의 checks를 보고, 오류가 있으면 쉬운 말로 짧게 물어 바로잡아 주세요. 여러 개를 한꺼번에 지우거나 처음부터 다시 할 때만 먼저 물어봐 주세요.`);
+나는 온톨로지를 처음 접하는 현업 담당자예요. 한국어로, 쉬운 말로, 한 번에 짧은 질문 하나씩 물어봐 주세요. 지금까지 만든 것은 GET ${api('/api/onto')}와 GET ${api('/api/state')}(classes·relations·attributes·individuals·questions)에서 보고 이어서 물어봐 주세요.
+순서: ① 답해야 할 질문 — questions가 비어 있으면 먼저 "이걸로 무엇을 알고 싶으세요?"를 묻고(예를 두세 개 들어서), 5~10개를 POST ${api('/api/apply')} {"diff":{"add":[{"list":"questions","text":"…","status":"open"}]}}로 저장. ② 다루는 대상 → 그 종류 → 서로 어떻게 이어지는지 → 각 대상에 적는 정보. 연결이 빠진 질문이 있으면 그것부터 물어 채워 주세요.
+표준과 맞추기: 개념을 새로 만들 때 GET ${api('/api/onto/standards')}의 표준 후보 중 맞는 게 있으면 "표준에서는 '설비(piece of equipment)'라고 해요. 같은 뜻인가요?"처럼 물어 보고, 맞으면 그 개념에 "external":"<표준 IRI>","externalMode":"subClassOf"(더 좁은 뜻) 또는 "equivalent"(같은 뜻)를 넣어 주세요. 표준에 없는 건 그냥 만들어요.
+단위: 숫자 정보(decimal·integer)가 나오면 단위를 꼭 묻고, "unit"에 GET ${api('/api/onto')}의 units 코드(KiloGM, DEG_C, HR, CCY_KRW …)를 넣어 주세요.
+온톨로지(개념·관계·속성·질문)는 답을 들을 때마다 승인 없이 바로 반영해 주세요: POST ${api('/api/apply')} {"diff":{"add":[{"list":"classes","name":"Customer","label":"고객","comment":"…","parent":"<상위 개념 id>"}, {"list":"relations","name":"places","label":"주문한다","domain":"<class id>","range":"<class id 또는 여러 개 배열>","functional":false}, {"list":"attributes","name":"email","label":"이메일","domain":"<class id>","datatype":"string"}],"update":[{"id":"…"}],"remove":["…"]}}. 개념 이름은 UpperCamelCase 영문, 관계·속성은 lowerCamelCase 영문, label은 한글. domain·range·parent는 GET /api/state의 실제 id를 써 주세요(새 개념을 먼저 추가하고 id를 받은 뒤 연결).
+실제 기계·물질(1번 반응기, 에탄올)은 승인을 받아 넣어 주세요: POST ${api('/api/agent')} {"text":"…","why":"…","effect":"…","diff":{"add":[{"list":"individuals","class":"<class id>","name":"Reactor01","label":"1번 반응기","<속성 name>":"값","<관계 name>":"<다른 실제 항목 id>"}]}}.
+반영한 다음 GET ${api('/api/onto')}의 checks를 보고, 오류가 있으면 쉬운 말로 짧게 물어 바로잡아 주세요. ${ontoQRule(api)} 여러 개를 한꺼번에 지우거나 처음부터 다시 할 때만 먼저 물어봐 주세요.`);
+};
+$('ontoQCheck').onclick = () => {
+  const api = (path) => `http://${agentHost}${path}`;
+  sendInstruction(`[Questions] 답해야 할 질문을 지금 온톨로지로 다시 확인해 주세요. 질문 목록: GET ${api('/api/state')}의 questions. ${ontoQRule(api)} 채팅에는 답할 수 있게 된 것과 아직 빠진 것을 두세 줄로, 빠진 것을 채울 다음 인터뷰 질문 하나와 함께 알려 주세요.`);
+};
+$('ontoDataDrop').querySelector('.onto-pick').onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('ontoDataFile').click(); } };
+$('ontoDataFile').onchange = async () => {
+  const f = $('ontoDataFile').files[0]; $('ontoDataFile').value = ''; if (!f) return;
+  const st = $('ontoDataSt'); st.textContent = '올리는 중…';
+  let j;
+  try { const r = await post('/api/upload', { name: f.name, type: f.type || '', data: await readAsBase64(f) }); j = await r.json(); if (!r.ok) throw new Error(j.error || r.status); }
+  catch (e) { st.textContent = '올리지 못했어요'; showErr(`Upload failed — ${e.message || e}`); return; }
+  st.textContent = `${f.name} — 읽어 달라고 부탁했어요`;
+  const api = (path) => `http://${agentHost}${path}`;
+  sendInstruction(`[Data] 이 파일(설비 대장이나 MSDS)을 읽고 실제 기계·물질을 온톨로지에 채워 주세요: ${j.path}
+1) 지금 틀(GET ${api('/api/state')}의 classes·attributes·relations, GET ${api('/api/onto')})과 파일의 칸을 맞춰 보세요(예: '설비 No.' → equipmentId, 'CAS No.' → casNumber). 행마다 어느 개념인지(반응기, 펌프, 원료 …) 정해 주세요.
+2) 틀에 없는 칸(예: 정격 전력, 인화점)이 있으면 채팅에서 "이것도 적을까요?"라고 묻고, 좋다고 하면 속성을 추가해 주세요(단위 포함).
+3) 실제 항목은 승인을 받아 넣어 주세요: POST ${api('/api/agent')} {"text":"<파일 이름>에서 실제 항목 N개","why":"…","effect":"…","diff":{"add":[{"list":"individuals","class":"<class id>","name":"<영문 이름>","label":"<한글 이름>","<속성 name>":"값"}]}}. 날짜는 YYYY-MM-DD, 숫자는 단위 없이 숫자만.
+4) 파일에서 못 찾은 중요한 값(예: 설치 라인, 위험등급)은 Requests로 물어봐 주세요(POST ${api('/api/requests')}). 채팅에는 몇 개를 찾았고 무엇이 비었는지 두세 줄로 알려 주세요.`);
 };
 // 인터뷰로 만든 온톨로지 설명 — 같은 자리(file = ONTO_MINE)의 설명 하나를 늘 최신으로 고친다(쌓지 않는다)
 const ONTO_MINE = 'ontology.ttl (인터뷰로 만든 것)';
@@ -2009,7 +2083,7 @@ var SUBTABS = {
   prd: [['current', 'Current'], ['history', 'History']],
   knowledge: [['ontology', 'Ontology'], ['graph', 'Graph'], ['documents', 'Documents']],
   update: STATUS_TABS,
-  work: [['interview', 'Interview'], ['graph', 'Graph'], ['turtle', 'Turtle'], ['explain', 'Explain']],
+  work: [['interview', 'Interview'], ['graph', 'Graph'], ['data', 'Data'], ['turtle', 'Turtle'], ['explain', 'Explain']],
 };
 var subSel = {}; try { subSel = JSON.parse(localStorage.getItem('ana-subtabs') || '{}') || {}; } catch {}
 var subCounts = {};

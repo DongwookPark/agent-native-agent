@@ -1,0 +1,30 @@
+{
+  "name": "IOF Core (Industrial Ontologies Foundry)",
+  "release": "202603",
+  "license": "MIT — Copyright (c) 2022 Industrial Ontologies Foundry",
+  "source": "https://github.com/iofoundry/ontology/blob/master/core/Core.rdf",
+  "page": "https://spec.industrialontologies.org/portal/release/202603/core.html",
+  "note": "A hand-picked part of IOF Core for chemical plants. IRIs and English labels come from Core.rdf; the Korean text is our own short gloss.",
+  "classes": [
+    { "iri": "https://spec.industrialontologies.org/ontology/construct/PieceOfEquipment", "label": "piece of equipment", "ko": "설비 — 생산에 쓰이는 기계·장치" },
+    { "iri": "https://spec.industrialontologies.org/ontology/construct/EquipmentRole", "label": "equipment role", "ko": "설비로 쓰이는 역할" },
+    { "iri": "https://spec.industrialontologies.org/ontology/construct/EngineeredSystem", "label": "engineered system", "ko": "설계해서 만든 시스템(기계·장치 등)" },
+    { "iri": "https://spec.industrialontologies.org/ontology/construct/Container", "label": "container", "ko": "물질을 담는 용기·탱크" },
+    { "iri": "https://spec.industrialontologies.org/ontology/construct/MaterialArtifact", "label": "material artifact", "ko": "사람이 만든 물건" },
+    { "iri": "https://spec.industrialontologies.org/ontology/construct/MaterialResource", "label": "material resource", "ko": "생산에 쓰이는 물질 자원" },
+    { "iri": "https://spec.industrialontologies.org/ontology/construct/RawMaterial", "label": "raw material", "ko": "원료" },
+    { "iri": "https://spec.industrialontologies.org/ontology/construct/RawMaterialRole", "label": "raw material role", "ko": "원료로 쓰이는 역할" },
+    { "iri": "https://spec.industrialontologies.org/ontology/construct/MaterialProduct", "label": "material product", "ko": "생산된 제품" },
+    { "iri": "https://spec.industrialontologies.org/ontology/construct/MaterialProductRole", "label": "material product role", "ko": "제품으로 나오는 역할" },
+    { "iri": "https://spec.industrialontologies.org/ontology/construct/Consumable", "label": "consumable", "ko": "소모품(촉매·첨가제처럼 쓰이며 줄어드는 것)" },
+    { "iri": "https://spec.industrialontologies.org/ontology/construct/ConsumableRole", "label": "consumable role", "ko": "소모품으로 쓰이는 역할" },
+    { "iri": "https://spec.industrialontologies.org/ontology/construct/ManufacturingProcess", "label": "manufacturing process", "ko": "제조 공정" },
+    { "iri": "https://spec.industrialontologies.org/ontology/construct/ProductProductionProcess", "label": "product production process", "ko": "제품 생산 공정" },
+    { "iri": "https://spec.industrialontologies.org/ontology/construct/MaterialLocationChangeProcess", "label": "material location change process", "ko": "물질을 옮기는 일(이송)" },
+    { "iri": "https://spec.industrialontologies.org/ontology/construct/MeasurementProcess", "label": "measurement process", "ko": "측정" },
+    { "iri": "https://spec.industrialontologies.org/ontology/construct/Person", "label": "person", "ko": "사람" },
+    { "iri": "https://spec.industrialontologies.org/ontology/construct/Manufacturer", "label": "manufacturer", "ko": "제조사" },
+    { "iri": "https://spec.industrialontologies.org/ontology/construct/PhysicalLocationIdentifier", "label": "physical location identifier", "ko": "위치를 가리키는 식별자(공장·라인 위치 등)" },
+    { "iri": "https://spec.industrialontologies.org/ontology/construct/Identifier", "label": "identifier", "ko": "식별자(번호·코드)" }
+  ]
+}

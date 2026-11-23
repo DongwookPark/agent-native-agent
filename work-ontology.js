@@ -36,11 +36,15 @@ module.exports = {
     { id: 'OntoRelation',  label: 'Relation',    list: 'relations',    title: nameOf, desc: 'A link between two classes (owl:ObjectProperty) — name, label, comment, domain, range, functional' },
     { id: 'OntoAttribute', label: 'Attribute',   list: 'attributes',   title: nameOf, desc: 'A value a class carries (owl:DatatypeProperty) — name, label, comment, domain, datatype, functional' },
     { id: 'Explanation',   label: 'Explanation', list: 'explanations', title: (x) => x.title || x.file || 'Explanation', desc: 'A plain-language explanation of an uploaded .ttl file' },
+    { id: 'Individual',    label: 'Individual',  list: 'individuals',  title: nameOf, desc: 'A real thing of a class (reactor R-01, ethanol) — class, name, label, and a field per attribute/relation name' },
+    { id: 'Question',      label: 'Question',    list: 'questions',    title: (x) => x.text || 'Question', desc: 'A question the ontology should answer (competency question) — text, status answerable|missing|open, needs, note' },
   ],
   relations: [
     { id: 'SUBCLASS_OF', label: 'subclass of', from: ['OntoClass'],     to: ['OntoClass'], made: 'derived', field: 'OntoClass.parent',     desc: 'rdfs:subClassOf' },
     { id: 'DOMAIN',      label: 'domain',      from: ['OntoRelation'],  to: ['OntoClass'], made: 'derived', field: 'OntoRelation.domain',  desc: 'The class the relation starts from' },
     { id: 'RANGE',       label: 'range',       from: ['OntoRelation'],  to: ['OntoClass'], made: 'derived', field: 'OntoRelation.range',   desc: 'The class the relation points to' },
     { id: 'ATTRIBUTE_OF', label: 'attribute of', from: ['OntoAttribute'], to: ['OntoClass'], made: 'derived', field: 'OntoAttribute.domain', desc: 'The class that carries this attribute' },
+    { id: 'INSTANCE_OF', label: 'instance of', from: ['Individual'], to: ['OntoClass'], made: 'derived', field: 'Individual.class', desc: 'The class this real thing belongs to' },
+    { id: 'NEEDS',       label: 'needs',       from: ['Question'],   to: ['OntoClass', 'OntoRelation', 'OntoAttribute'], made: 'derived', field: 'Question.needs', desc: 'Classes, relations and attributes needed to answer the question' },
   ],
 };
